@@ -1,3 +1,4 @@
+"""Functions to work with projections"""
 from math import sin, pi, atanh, atan, exp, asin, log, tan
 
 from PyQt5.QtCore import QPointF
@@ -6,11 +7,14 @@ from utils.tiles import LonLat
 
 
 class Projection:
+    """Generic projection class"""
+
     def to_pixel(self, coordinates: LonLat):
-        pass
+        """Geo coordinates to pixel coordinates """
 
 
 class MercatorProjection(Projection):
+    """Mercator projection class"""
     VRadiusA = 6378137
     VRadiusB = 6356752
     MerkElipsK = 0.000000001
@@ -25,6 +29,7 @@ class MercatorProjection(Projection):
         return QPointF(x, y)
 
     def to_geo(self, point: QPointF) -> LonLat:
+        """Convert pixel coordinates to geo coorrdinates"""
         x = (point.x() - 0.5) * 360
 
         if point.y() > 0.5:
@@ -49,8 +54,12 @@ class MercatorProjection(Projection):
             y = zu * 180 / pi
         return LonLat(x, y)
 
-    def y2lat(self, a):
+    @staticmethod
+    def y2lat(a):
+        """Y coordinate to Latitude"""
         return 180.0 / pi * (2.0 * atan(exp(a * pi / 180.0)) - pi / 2.0)
 
-    def lat2y(self, a):
+    @staticmethod
+    def lat2y(a):
+        """Latitude to Y coordinate"""
         return 180.0 / pi * log(tan(pi / 4.0 + a * (pi / 180.0) / 2.0))
